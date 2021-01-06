@@ -15,7 +15,7 @@
 #
 
 from .collector import *
-from .logger import PythonLogger, TensorBoardLogger, CsvLogger, NullLogger
+from .logger import PythonLogger,  CsvLogger, NullLogger
 
 del logger
 del collector
