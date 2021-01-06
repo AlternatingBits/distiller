@@ -106,15 +106,17 @@ def create_mask_level_criterion(tensor, desired_sparsity):
         boolean mask tensor, having the same size as the input tensor.
     """
     with torch.no_grad():
-        # partial sort
-        bottomk, _ = torch.topk(tensor.abs().view(-1),
-                                int(desired_sparsity * tensor.numel()),
-                                largest=False,
-                                sorted=True)
-        threshold = bottomk.data[-1]  # This is the largest element from the group of elements that we prune away
+        if int(desired_sparsity * tensor.numel()) > 0:
+            # partial sort
+            bottomk, _ = torch.topk(tensor.abs().view(-1),
+                                    int(desired_sparsity * tensor.numel()),
+                                    largest=False,
+                                    sorted=True)
+            threshold = bottomk.data[-1]  # This is the largest element from the group of elements that we prune away
+        else:
+            threshold = -1 * float("inf")
         mask = create_mask_threshold_criterion(tensor, threshold)
         return mask
-
 
 def create_mask_sensitivity_criterion(tensor, sensitivity):
     """Create a tensor mask using a sensitivity criterion.
