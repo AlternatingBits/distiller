@@ -19,6 +19,5 @@ pyyaml
 pytest
 xlsxwriter
 pretrainedmodels
-scikit-learn
 gym
 tqdm
