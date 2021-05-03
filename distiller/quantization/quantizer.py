@@ -48,15 +48,18 @@ def hack_float_backup_parameter(module, name, num_bits):
     module.register_buffer(name, torch.zeros_like(param))
 
     first = False
-    if not hasattr(module, 'repr_mod'):
-        setattr(module, 'repr_mod', ', \nDistiller_QuantAwareTrain: ')
-        first = True
-        module.original_extra_repr = module.extra_repr
-        module.extra_repr = lambda: module.original_extra_repr() + module.repr_mod
 
-    if not first:
-        module.repr_mod += ' ; '
-    module.repr_mod += '{0} --> {1} bits'.format(name, num_bits)
+    # FIXME: the following code is commented out due to problems with pickle
+
+    # if not hasattr(module, 'repr_mod'):
+    #     setattr(module, 'repr_mod', ', \nDistiller_QuantAwareTrain: ')
+    #     first = True
+    #     module.original_extra_repr = module.extra_repr
+    #     module.extra_repr = lambda: module.original_extra_repr() + module.repr_mod
+    #
+    # if not first:
+    #     module.repr_mod += ' ; '
+    # module.repr_mod += '{0} --> {1} bits'.format(name, num_bits)
 
 
 class _ParamToQuant(object):
@@ -316,7 +319,7 @@ class Quantizer(object):
                     valid_kwargs, invalid_kwargs = distiller.filter_kwargs(self.module_overrides_map[full_name],
                                                                            replace_fn)
                     if invalid_kwargs:
-                        raise TypeError("""Quantizer of type %s doesn't accept \"%s\" 
+                        raise TypeError("""Quantizer of type %s doesn't accept \"%s\"
                                             as override arguments for %s. Allowed kwargs: %s"""
                                         % (type(self), list(invalid_kwargs), type(module), list(valid_kwargs)))
                     new_module = replace_fn(module, full_name, self.module_qbits_map, **valid_kwargs)
